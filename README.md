@@ -81,7 +81,7 @@ const expandedDAIBalanceBefore = await DAI.balanceOf(signers[0].address)
 const DAIBalanceBefore = Number(hre.ethers.utils.formatUnits(expandedDAIBalanceBefore, DAI_DECIMALS))
 ```
 
-Approve 用來允許傳入的地址使用用戶的1WETH,並將其中的0.1WETH利用方才的simpleSwap轉換成DAI 
+Approve 用來允許傳入的地址使用用戶的1WETH,並將其中的0.1WETH利用方才的simpleSwap轉換成DAI  
 ```Solidity
 /* Approve the swapper contract to spend WETH for me */
 await WETH.approve(simpleSwap.address, hre.ethers.utils.parseEther('1'))
@@ -90,4 +90,16 @@ const amountIn = hre.ethers.utils.parseEther('0.1')
 const swap = await simpleSwap.swapWETHForDAI(amountIn, { gasLimit: 300000 })
 swap.wait()
 ```
-最後在
+
+最後在寫一個檢查用的判斷式看轉換後的DAI餘額有沒有大於轉換前就ok囉.  
+```Solidity
+/* Test that we now have more DAI than when we started */
+expect(DAIBalanceAfter).is.greaterThan(DAIBalanceBefore)
+```
+
+在console中下，就可以利用本機分岔的以太坊來進行本次撰寫程式的測試囉！   
+```Solidity
+npx hardhat test --network localhost
+```
+
+
